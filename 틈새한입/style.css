@@ -9,7 +9,8 @@
   --paper: #fbf7f0;       /* 한지 느낌 배경 */
   --card: #ffffff;
   --line: #eadfce;
-  --bg: #f1e9dc;
+  --bg: #c8102e;          /* 페이지 배경 (빨강) */
+  --on-bg: #ffffff;       /* 배경 위 글자 */
   --frame: #241c17;
 }
 
@@ -323,6 +324,10 @@ select {
 @keyframes slide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 
 .foot { text-align: center; font-size: 12px; color: var(--muted); padding: 8px 16px 32px; }
+
+/* 빨간 배경 위 글자는 흰색으로 */
+.top h1, .top p, .notice, .device-label, .bridge, .bridge .arrow, .foot { color: var(--on-bg); }
+.top p, .notice, .bridge, .foot { opacity: .9; }
 
 /* ---------- 좁은 화면 ---------- */
 @media (max-width: 1000px) {
