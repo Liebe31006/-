@@ -1,97 +1,7 @@
 /* =========================================================
-   틈새 한입 · 시연용 프로토타입
-   아래 데이터는 모두 시연용 예시예요. (실제 가게·버스 정보 아님)
-   lat, lng 는 실제 지도 위 위치(위도, 경도)예요. 가게 위치는 예시라 실제와 달라요.
+   틈새 한입 · 시연용 프로토타입 (동작 코드)
+   가게·정류장 데이터는 data.js 에 있어요.
    ========================================================= */
-
-const STOPS = [
-  { id: 'market', name: '남부시장 앞',   lat: 35.8128, lng: 127.1468, bus: '1번 버스', wait: 18 },
-  { id: 'hanok',  name: '한옥마을 입구', lat: 35.8160, lng: 127.1505, bus: '2번 버스', wait: 9 },
-  { id: 'gaeksa', name: '객사 앞',       lat: 35.8193, lng: 127.1445, bus: '3번 버스', wait: 20 },
-];
-
-const SHOPS = [
-  {
-    id: 'mandu', name: '할매만두', emoji: '🥟', lat: 35.8120, lng: 127.1460, prep: 3,
-    menu: '손만두 한 접시', price: 4000, local: true, tag: '시장 골목 간식',
-    story: {
-      philosophy: '만두피는 매일 아침 직접 밀어요. 기계로 찍으면 편하지만, 손으로 빚어야 쫄깃해요.',
-      reason: '시장에서 장사하던 어머니 옆에서 일을 배우다가, 30년 전 제 이름으로 작은 가게를 열었어요.',
-      food: '김치와 두부를 넉넉히 넣은 손만두예요. 버스 기다리며 서서 먹기 좋게 한 접시씩 내요.',
-    },
-    news: '이번 주부터 올해 김장김치로 빚은 김치만두가 나왔어요.',
-  },
-  {
-    id: 'gukbap', name: '새벽 국밥', emoji: '🍲', lat: 35.8136, lng: 127.1480, prep: 5,
-    menu: '콩나물국밥 맛보기 반 그릇', price: 5000, local: true, tag: '현지인 아침 단골집',
-    story: {
-      philosophy: '콩나물은 오래 끓이지 않아요. 아삭함이 살아 있어야 제대로 된 콩나물국밥이죠.',
-      reason: '새벽 시장 상인들께 따뜻한 한 끼를 드리고 싶어서 새벽 5시에 문을 열기 시작했어요.',
-      food: '여행 오신 분들이 다른 음식도 맛보실 수 있게 반 그릇 크기 맛보기 메뉴를 만들었어요.',
-    },
-    news: '날이 추워져서 아침 영업을 30분 일찍 시작해요.',
-  },
-  {
-    id: 'sundae', name: '골목 피순대', emoji: '🍢', lat: 35.8114, lng: 127.1452, prep: 7,
-    menu: '피순대 반 접시', price: 7000, local: true, tag: '2대째 골목 순댓집',
-    story: {
-      philosophy: '속 재료 비율은 30년째 그대로예요. 바꾸지 않는 게 제 고집이에요.',
-      reason: '아버지가 하시던 순댓집을 이어받아 골목을 지키고 있어요.',
-      food: '처음 드시는 분도 부담 없도록 반 접시로 맛볼 수 있게 했어요.',
-    },
-    news: '골목 담벼락에 손님들이 남긴 사진을 모아 작은 전시를 열었어요.',
-  },
-  {
-    id: 'bibim', name: '한입 비빔', emoji: '🍚', lat: 35.8152, lng: 127.1524, prep: 6,
-    menu: '작은 놋그릇 비빔밥', price: 6000, local: false, tag: '한옥마을 맛보기 밥집',
-    story: {
-      philosophy: '나물 하나하나 따로 무쳐요. 한 숟갈에 여러 맛이 나야 비빔밥이에요.',
-      reason: '비빔밥 한 그릇이 부담스럽다는 이야기를 듣고, 가볍게 맛볼 수 있는 작은 그릇을 만들었어요.',
-      food: '다른 가게도 둘러보실 수 있게 양을 줄이고, 대신 나물 가짓수는 그대로 담았어요.',
-    },
-    news: '가을 나물로 바뀐 계절 비빔밥이 나왔어요.',
-  },
-  {
-    id: 'moju', name: '모주 사랑방', emoji: '🍵', lat: 35.8141, lng: 127.1538, prep: 2,
-    menu: '따뜻한 모주 한 잔', price: 3000, local: true, tag: '전통 음료 쉼터',
-    story: {
-      philosophy: '생강, 대추, 계피를 넣고 오래 달여요. 급하게 만들면 맛이 얕아져요.',
-      reason: '할머니가 겨울마다 끓여 주시던 모주 맛을 여행 오신 분들께도 알리고 싶었어요.',
-      food: '막걸리에 약재를 넣고 달인 전통 음료예요. 알코올이 아주 조금 남아 있어요.',
-    },
-    news: '추운 날 정류장에서 기다리는 분들께 첫 잔을 반값에 드려요.',
-  },
-  {
-    id: 'jjajang', name: '옛날 물짜장', emoji: '🍜', lat: 35.8185, lng: 127.1458, prep: 8,
-    menu: '물짜장 작은 그릇', price: 6000, local: true, tag: '40년 동네 중국집',
-    story: {
-      philosophy: '해물은 그날 들어온 것만 써요. 다 떨어지면 그날 장사는 끝이에요.',
-      reason: '동네 사람들이 퇴근길에 편하게 들르는 가게를 만들고 싶어 40년 전 문을 열었어요.',
-      food: '걸쭉한 국물에 해물을 듬뿍 넣은 물짜장이에요. 매운맛과 순한 맛 중에 고를 수 있어요.',
-    },
-    news: '가게 40주년 기념으로 단골손님 사진을 벽에 걸고 있어요.',
-  },
-  {
-    id: 'omogari', name: '천변 오모가리', emoji: '🐟', lat: 35.8098, lng: 127.1498, prep: 15,
-    menu: '오모가리탕 1인분', price: 12000, local: true, tag: '천변 노포',
-    story: {
-      philosophy: '뚝배기에 끓여야 끝까지 뜨겁고 깊은 맛이 나요.',
-      reason: '천변에서 민물고기를 잡던 시절부터 이 자리를 지켜 왔어요.',
-      food: '시래기를 듬뿍 넣고 얼큰하게 끓여요. 시간 여유가 있을 때 앉아서 드시길 권해요.',
-    },
-    news: '시래기를 새로 말렸어요. 다음에 오시면 겨울 시래기로 끓여 드릴게요.',
-  },
-  {
-    id: 'jeonbyeong', name: '따끈 전병', emoji: '🥞', lat: 35.8168, lng: 127.1490, prep: 1,
-    menu: '수제 전병 세 장', price: 2000, local: false, tag: '걸으며 먹는 간식',
-    story: {
-      philosophy: '반죽에 쌀가루를 섞어 얇고 바삭하게 구워요.',
-      reason: '은퇴하고 손주 간식을 굽다가, 동네 아이들이 좋아해서 가게를 냈어요.',
-      food: '걸으면서 먹기 좋은 얇은 전병이에요. 주문하면 1분 안에 받을 수 있어요.',
-    },
-    news: '흑임자 전병이 새로 나왔어요.',
-  },
-];
 
 /* ---------- 설정 ---------- */
 const WALK_M_PER_MIN = 70;  // 걷는 속도 (분당 약 70m)
@@ -136,7 +46,7 @@ let openShopId = null;
 let lastMin = null;
 let lastAvail = new Set(availableIds());
 const lastIncoming = {};
-SHOPS.forEach(s => { lastIncoming[s.id] = (state.incoming[s.id] || []).length; });
+SHOPS.forEach(s => { lastIncoming[s.id] = incomingOf(s.id).length; });
 
 /* ---------- 계산 ---------- */
 function isAvail(id) { const t = state.available[id]; return !!t && t > Date.now(); }
@@ -154,6 +64,12 @@ function walkMin(shop) {
 function tripMin(shop) { return walkMin(shop) * 2 + shop.prep + BUFFER_MIN; }
 function remainMin() { return Math.floor(remain / 60); }
 function fits(shop) { return tripMin(shop) <= remainMin(); }
+// 화면에 필요한 시간 정보를 한 번에 계산
+function tripInfo(shop) {
+  const walk = walkMin(shop), trip = tripMin(shop);
+  return { shop, walk, trip, ok: trip <= remainMin() };
+}
+function incomingOf(id) { return state.incoming[id] || []; }
 
 function badges(shop) {
   let h = '';
@@ -169,7 +85,7 @@ function renderBus() {
   $('#busTime').classList.toggle('soon', remain < 300);
 }
 
-/* 실제 지도 (Leaflet + OpenStreetMap/CARTO 지도) */
+/* ---------- 실제 지도 (Leaflet + OpenStreetMap) ---------- */
 let map = null, rangeCircle = null;
 const shopMarkers = {}, stopMarkers = {};
 
@@ -203,7 +119,6 @@ function initMap() {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
-  window.addEventListener('load', refreshMapSize);
   rangeCircle = L.circle([st.lat, st.lng], {
     radius: reachRadius(), color: '#e4572e', weight: 1.5, dashArray: '5 6',
     fillColor: '#e4572e', fillOpacity: 0.06, interactive: false,
@@ -230,12 +145,12 @@ function refreshMapSize() {
   if (map) setTimeout(() => map.invalidateSize(), 0);
 }
 
+/* ---------- 틈새 한입 목록 ---------- */
 function card(o) {
   const s = o.shop;
-  const ok = o.trip <= remainMin();
   const pct = Math.min(100, Math.round(o.trip / Math.max(1, remainMin()) * 100));
   return `
-  <button type="button" class="card ${ok ? '' : 'dim'}" data-shop="${s.id}">
+  <button type="button" class="card ${o.ok ? '' : 'dim'}" data-shop="${s.id}">
     <span class="card-emoji">${s.emoji}</span>
     <span class="card-main">
       <span class="card-title">${s.name} ${badges(s)}</span>
@@ -247,10 +162,10 @@ function card(o) {
 }
 
 function renderGap() {
-  const all = SHOPS.map(shop => ({ shop, walk: walkMin(shop), trip: tripMin(shop) }));
-  const ok = all.filter(o => o.trip <= remainMin())
+  const all = SHOPS.map(tripInfo);
+  const ok = all.filter(o => o.ok)
     .sort((a, b) => (isAvail(b.shop.id) - isAvail(a.shop.id)) || a.trip - b.trip);
-  const no = all.filter(o => o.trip > remainMin()).sort((a, b) => a.trip - b.trip);
+  const no = all.filter(o => !o.ok).sort((a, b) => a.trip - b.trip);
 
   $('#gapCount').textContent = ok.length;
   $('#gapHint').innerHTML = ok.length
@@ -260,6 +175,7 @@ function renderGap() {
     (no.length ? `<details class="later"><summary>이번 버스엔 빠듯한 곳 ${no.length}곳</summary>${no.map(card).join('')}</details>` : '');
 }
 
+/* ---------- 내 단골 ---------- */
 function renderFav() {
   const saved = state.saved.map(shopById).filter(Boolean);
   $('#favCount').textContent = saved.length;
@@ -276,10 +192,11 @@ function renderFav() {
     : `<div class="empty"><p>⭐</p><p>마음에 든 가게를 단골로 저장하면<br>여행이 끝나도 사장님 소식을 받을 수 있어요.</p></div>`;
 }
 
+/* ---------- 가게 상세 ---------- */
 function renderSheet() {
   if (!openShopId) return;
   const s = shopById(openShopId);
-  const w = walkMin(s), t = tripMin(s), ok = t <= remainMin();
+  const { walk: w, trip: t, ok } = tripInfo(s);
   const saved = state.saved.includes(s.id);
   $('#sheetContent').innerHTML = `
     <div class="sh-top">
@@ -333,7 +250,7 @@ function renderOwner() {
   $('.big-sub', btn).textContent = on ? '근처 여행객 지도에 표시되고 있어요' : '누르면 근처 여행객에게 알려요';
   renderAutoOff();
 
-  const inc = state.incoming[s.id] || [];
+  const inc = incomingOf(s.id);
   const now = Date.now();
   $('#statComing').textContent = inc.filter(x => now - x.t < (x.walk + 10) * 60000).length;
   $('#statVisit').textContent = inc.length;
@@ -379,7 +296,7 @@ function sync() {
 
   let newGuest = false;
   SHOPS.forEach(s => {
-    const n = (state.incoming[s.id] || []).length;
+    const n = incomingOf(s.id).length;
     if (n > lastIncoming[s.id] && s.id === ownerShopId) newGuest = true;
     lastIncoming[s.id] = n;
   });
@@ -394,14 +311,19 @@ function sync() {
 }
 
 /* ---------- 동작 ---------- */
+function setRemain(sec) {
+  remain = sec;
+  lastMin = remainMin();
+  sync();
+}
+
 function setStop(id) {
   stopId = id;
-  remain = currentStop().wait * 60;
+  const st = currentStop();
   $('#stopSelect').value = id;
-  $('#waitRange').value = currentStop().wait;
-  lastMin = remainMin();
-  if (map) map.panTo([currentStop().lat, currentStop().lng]);
-  sync();
+  $('#waitRange').value = st.wait;
+  if (map) map.panTo([st.lat, st.lng]);
+  setRemain(st.wait * 60);
 }
 
 function toggleIdle() {
@@ -430,7 +352,7 @@ function toggleSave(id) {
 function goTo(id) {
   const s = shopById(id);
   const w = walkMin(s);
-  state.incoming[id] = [...(state.incoming[id] || []), { t: Date.now(), walk: w, menu: s.menu, stop: currentStop().name }];
+  state.incoming[id] = [...incomingOf(id), { t: Date.now(), walk: w, menu: s.menu, stop: currentStop().name }];
   save();
   closeSheet();
   sync();
@@ -467,21 +389,16 @@ function init() {
   }));
 
   $('#stopSelect').addEventListener('change', e => setStop(e.target.value));
-  $('#waitRange').addEventListener('input', e => {
-    remain = Number(e.target.value) * 60;
-    lastMin = remainMin();
-    sync();
-  });
+  $('#waitRange').addEventListener('input', e => setRemain(Number(e.target.value) * 60));
 
-  // 여행객 화면 안의 버튼들 (지도 핀, 카드, 시트 버튼 등)
+  // 여행객 화면 안의 버튼들 (카드, 단골, 시트 버튼). 지도 핀은 initMap 에서 연결해요.
   $('#traveler .phone').addEventListener('click', e => {
-    const el = e.target.closest('[data-shop],[data-stop],[data-close],[data-save],[data-go],[data-ship]');
+    const el = e.target.closest('[data-shop],[data-close],[data-save],[data-go],[data-ship]');
     if (!el) return;
     if (el.dataset.close !== undefined) return closeSheet();
     if (el.dataset.save) return toggleSave(el.dataset.save);
     if (el.dataset.go) return goTo(el.dataset.go);
     if (el.dataset.ship) return toast('traveler', '📦 택배 주문은 다음 단계에서 연결할 기능이에요.');
-    if (el.dataset.stop) return setStop(el.dataset.stop);
     if (el.dataset.shop) return openSheet(el.dataset.shop);
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
@@ -525,6 +442,7 @@ function init() {
 
   lastMin = remainMin();
   initMap();
+  window.addEventListener('load', refreshMapSize);
   renderAll();
 }
 

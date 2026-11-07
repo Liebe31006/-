@@ -121,25 +121,17 @@ select {
   font-family: inherit; z-index: 0;
 }
 .map-off { padding: 40px 16px; text-align: center; color: var(--muted); font-size: 14px; }
-.leaflet-marker-icon.mk { background: none; border: 0; overflow: visible; }
-.mk .pin { position: absolute; left: 0; top: 0; transform: translate(-50%, -18px); cursor: pointer; }
-.mk .stop { position: absolute; left: 0; top: 0; transform: translate(-50%, -15px); cursor: pointer; }
 .leaflet-container .leaflet-control-attribution { font-size: 9px; }
-.dot.range { border: 1.5px dashed var(--main); background: rgba(228,87,46,.08); }
-.map-bg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.map-bg .road { stroke: #fff; stroke-width: 7; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
-.map-bg .river { stroke: #bfdbfe; stroke-width: 14; fill: none; vector-effect: non-scaling-stroke; stroke-linecap: round; }
-.map-bg .block { fill: #ebe3d3; }
-.area {
-  position: absolute; transform: translate(-50%, -50%);
-  font-size: 11px; font-weight: 700; color: #a8998a; letter-spacing: 1px; pointer-events: none;
-}
 
+/* 지도 위 표시: Leaflet 마커(.mk)는 크기 0, 그 점을 기준으로 아이콘을 놓아요 */
+.leaflet-marker-icon.mk { background: none; border: 0; overflow: visible; }
 .pin, .stop {
-  position: absolute; transform: translate(-50%, -50%);
+  position: absolute; left: 0; top: 0;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
-  background: none; border: 0; z-index: 2;
+  cursor: pointer;
 }
+.pin { transform: translate(-50%, -18px); }   /* 동그라미 가운데가 위치 */
+.stop { transform: translate(-50%, -15px); }
 .pin-emoji {
   width: 36px; height: 36px; border-radius: 50%;
   display: grid; place-items: center; font-size: 18px;
@@ -182,6 +174,7 @@ select {
 .dot.green { border-color: var(--green); }
 .dot.main { border-color: var(--main); }
 .dot.gray { border-color: var(--line); }
+.dot.range { border: 1.5px dashed var(--main); background: rgba(228,87,46,.08); }
 .map-tip { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
 /* ---------- 틈새 목록 ---------- */
