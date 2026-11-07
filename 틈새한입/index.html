@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>틈새 한입 시연</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-view="traveler">
+
+<header class="top">
+  <div class="top-text">
+    <h1>틈새 한입 <span>시연용 프로토타입</span></h1>
+    <p>버스를 기다리는 틈, 비어 있는 자리, 사장님의 이야기로 여행객과 전주 동네 가게를 잇습니다.</p>
+  </div>
+  <div class="top-actions">
+    <div class="view-switch">
+      <button type="button" data-view="traveler" class="on">👟 여행객 화면</button>
+      <button type="button" data-view="owner">🏪 사장님 화면</button>
+    </div>
+    <button type="button" class="reset" id="resetBtn">시연 초기화</button>
+  </div>
+</header>
+
+<p class="notice">⚠️ 가게, 정류장, 버스, 사장님 이야기는 모두 <b>시연용 예시 데이터</b>예요. 실제 정보가 아닙니다.</p>
+
+<main class="stage">
+
+  <!-- ================= 여행객 화면 ================= -->
+  <section class="device" id="traveler">
+    <div class="device-label">👟 여행객 화면</div>
+    <div class="phone">
+      <div class="app-head">
+        <div class="brand">틈새 한입</div>
+        <label class="stop-pick">
+          <span>🚏</span>
+          <select id="stopSelect" aria-label="정류장 선택"></select>
+        </label>
+      </div>
+
+      <div class="bus-card">
+        <div class="bus-row">
+          <div>
+            <div class="bus-line"><span id="busNo"></span> 도착까지</div>
+            <div class="bus-time" id="busTime">18:00</div>
+          </div>
+          <div class="bus-icon">🚌</div>
+        </div>
+        <label class="demo-slider">
+          <span>시연용 · 남은 시간 조절</span>
+          <input type="range" id="waitRange" min="3" max="30" value="18">
+        </label>
+      </div>
+
+      <nav class="tabs">
+        <button type="button" data-tab="map" class="on">지도</button>
+        <button type="button" data-tab="gap">틈새 한입 <b id="gapCount">0</b></button>
+        <button type="button" data-tab="fav">내 단골 <b id="favCount">0</b></button>
+      </nav>
+
+      <div class="tab-body">
+        <div class="pane on" id="pane-map">
+          <div class="map" id="map"></div>
+          <ul class="legend">
+            <li><i class="dot green"></i>바로 앉는 집</li>
+            <li><i class="dot main"></i>버스 오기 전 다녀올 수 있음</li>
+            <li><i class="dot gray"></i>이번 버스엔 빠듯함</li>
+            <li><i class="dot range"></i>틈새 반경</li>
+          </ul>
+          <p class="map-tip">가게를 누르면 사장님 이야기를 볼 수 있어요. 🚏를 누르면 정류장이 바뀌어요. 지도는 실제 전주 지도이고, 가게는 예시예요.</p>
+        </div>
+        <div class="pane" id="pane-gap">
+          <p class="hint" id="gapHint"></p>
+          <div id="gapList"></div>
+        </div>
+        <div class="pane" id="pane-fav">
+          <div id="favList"></div>
+        </div>
+      </div>
+
+      <div class="sheet" id="sheet">
+        <div class="sheet-backdrop" data-close></div>
+        <div class="sheet-card" role="dialog" aria-modal="true" aria-label="가게 상세">
+          <button type="button" class="sheet-close" data-close aria-label="닫기">✕</button>
+          <div id="sheetContent"></div>
+        </div>
+      </div>
+
+      <div class="toast" id="tToast" role="status"></div>
+    </div>
+  </section>
+
+  <!-- 가운데 안내 -->
+  <div class="bridge" aria-hidden="true">
+    <p>사장님이 버튼을 누르면</p>
+    <div class="arrow">⟵</div>
+    <p>여행객 지도에<br>바로 떠요</p>
+    <div class="arrow">⟶</div>
+    <p>여행객이 "지금 갈게요"를<br>누르면 사장님께 알림</p>
+  </div>
+
+  <!-- ================= 사장님 화면 ================= -->
+  <section class="device" id="owner">
+    <div class="device-label">🏪 사장님 화면</div>
+    <div class="phone owner-phone">
+      <div class="app-head">
+        <div class="brand">틈새 한입 <small>사장님</small></div>
+        <select id="ownerShop" aria-label="내 가게 선택"></select>
+      </div>
+
+      <div class="owner-body">
+        <p class="owner-greet" id="ownerGreet"></p>
+
+        <button type="button" class="big-btn" id="idleBtn" aria-pressed="false">
+          <span class="big-emoji">🙋</span>
+          <span class="big-text">지금 한가해요</span>
+          <span class="big-sub">누르면 근처 여행객에게 알려요</span>
+        </button>
+        <p class="auto-off" id="autoOff"></p>
+
+        <div class="stats">
+          <div><b id="statComing">0</b><span>오는 중인 손님</span></div>
+          <div><b id="statVisit">0</b><span>오늘 틈새 손님</span></div>
+        </div>
+
+        <h3 class="feed-title">알림</h3>
+        <ul class="feed" id="feed"></ul>
+      </div>
+
+      <div class="toast" id="oToast" role="status"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>2026 HUSS 바이브코딩 경진대회 · 주제: 지역가치 창출 · [팀 이름]</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
